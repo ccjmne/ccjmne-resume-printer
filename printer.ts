@@ -35,7 +35,7 @@ import { author, description, homepage, keywords, name, title } from '../package
     .map(({ name }) => ({ path: resolve(src, name), name: name.replace(/[.]ts$/, '') }))
     .reduce((acc, { name, path }) => ({ ...acc, [name]: path }), {})
 
-  const MockDate = await readFile('./node_modules/mockdate/lib/mockdate.js');
+  const MockDate = await readFile(resolve(__dirname, 'node_modules/mockdate/lib/mockdate.js'));
 
   class PDFPrinter {
 
