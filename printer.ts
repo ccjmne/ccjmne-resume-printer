@@ -18,7 +18,7 @@ export type PDFPrinterConfig = {
   properties?: DocumentProperties
   /** The date to use for the 'generated on' info and in the PDF metadata */
   date?:       Date
-  /** Whether to generate a thumbnail of the output image (scaled to 1/8); in which case .png output is forced */
+  /** Whether scale down output image (to 200px of height), in which case .png output is forced */
   thumbnail?:  boolean
   /** Whether the rest of the compilation should wait for PDF compilation to go through */
   blocking?:   boolean
@@ -96,7 +96,7 @@ import { author, description, homepage, keywords, name, title } from '../package
         input: Buffer.from(data),
         top: 0,
         left: meta.slice(0, i).reduce((sum, { width }) => sum + (width ?? 0), 0),
-      }))).png().toBuffer().then(result => this.config.thumbnail ? sharp(result).resize({ height: Math.floor(height / 8) }).png().toBuffer() : result)
+      }))).png().toBuffer().then(result => this.config.thumbnail ? sharp(result).resize({ height: 200 }).png().toBuffer() : result)
     }
 
     private async combinePDFs(pdfs: Uint8Array[]): Promise<Buffer> {
