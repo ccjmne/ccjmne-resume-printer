@@ -25,11 +25,6 @@ export type PDFPrinterConfig = {
 import { author, description, homepage, keywords, name, title } from '../package.json'
 
 (async function() {
-  const src =  resolve(__dirname, '..', 'src')
-  const dist = resolve(__dirname, '..', 'dist')
-
-  const pages = (await readdir(src)).filter(name => /\d+[.]ts$/.test(name))
-
   const MockDate = await readFile(resolve(__dirname, 'node_modules/mockdate/lib/mockdate.js'));
 
   class PDFPrinter {
@@ -111,7 +106,7 @@ import { author, description, homepage, keywords, name, title } from '../package
   }
 
   const printer = new PDFPrinter({
-    ...{ scheme: 'file', paths: [pages.shift() ?? 'ccjmne-resume', ...pages].map(page => resolve(dist, page.replace(/([.]\w{2,4})?$/, '.html'))) },
+    ...{ scheme: 'file', paths: (await readdir(resolve(__dirname, '..', 'dist'))).filter(name => /\d+[.]html$/.test(name)) },
     output: resolve(__dirname, process.env.OUTPUT ?? 'ccjmne-resume.pdf'),
     date: process.env.DATE ? new Date(process.env.DATE) : undefined,
     properties: { title, author, subject: description, keywords: keywords.join(', '), creator: `${name} (${homepage})` },
