@@ -5,3 +5,12 @@ Printing (possibly old) versions of [ccjmne-resume](https://github.com/ccjmne/cc
 ```shell
 DATE=2017-03-10 OUTPUT=2017-03-10.png THUMBNAIL=yes tsx printer.ts
 ```
+
+Example pipeline:
+
+```shell
+git checkout 1.0.0
+yarn install
+npx webpack --mode production
+DATE=$(git log -1 --format=%aI | cut -d'T' -f1) OUTPUT=$DATE tsx printer.ts
+```
