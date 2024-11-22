@@ -28,10 +28,7 @@ import { author, description, homepage, keywords, name, title } from '../package
   const src =  resolve(__dirname, '..', 'src')
   const dist = resolve(__dirname, '..', 'dist')
 
-  const pages = (await readdir(src, { withFileTypes: true }))
-    .filter(({ name }) => /\d+[.]ts$/.test(name))
-    .map(({ name }) => ({ path: resolve(src, name), name: name.replace(/[.]ts$/, '') }))
-    .reduce((acc, { name, path }) => ({ ...acc, [name]: path }), {})
+  const pages = (await readdir(src)).filter(name => /\d+[.]ts$/.test(name))
 
   const MockDate = await readFile(resolve(__dirname, 'node_modules/mockdate/lib/mockdate.js'));
 
@@ -114,7 +111,7 @@ import { author, description, homepage, keywords, name, title } from '../package
   }
 
   const printer = new PDFPrinter({
-    ...{ scheme: 'file', paths: Object.keys(pages).map(name => resolve(dist, `${name}.html`)) },
+    ...{ scheme: 'file', paths: [pages.shift() ?? 'ccjmne-resume', ...pages].map(page => resolve(dist, page.replace(/([.]\w{2,4})?$/, '.html'))) },
     output: resolve(__dirname, process.env.OUTPUT ?? 'ccjmne-resume.pdf'),
     date: process.env.DATE ? new Date(process.env.DATE) : undefined,
     properties: { title, author, subject: description, keywords: keywords.join(', '), creator: `${name} (${homepage})` },
