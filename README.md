@@ -12,5 +12,6 @@ Example pipeline:
 git checkout 1.0.0
 yarn install
 npx webpack --mode production
-DATE=$(git log -1 --format=%aI | cut -d'T' -f1) OUTPUT=$DATE tsx printer.ts
+DATE=$(git log -1 --format=%aI | cut -d'T' -f1) OUTPUT=$DATE     tsx path/to/printer.ts
+DATE=$(git log -1 --format=%aI | cut -d'T' -f1) OUTPUT=$DATE.png tsx path/to/printer.ts
 ```
