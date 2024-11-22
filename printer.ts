@@ -18,8 +18,6 @@ export type PDFPrinterConfig = {
   properties?: DocumentProperties
   /** The date to use for the 'generated on' info and in the PDF metadata */
   date?:       Date
-  /** Whether scale down output image (to 200px of height), in which case .png output is forced */
-  thumbnail?:  boolean
   /** Whether the rest of the compilation should wait for PDF compilation to go through */
   blocking?:   boolean
 }
@@ -82,7 +80,7 @@ import { author, description, homepage, keywords, name, title } from '../package
     }
 
     private get output(): string {
-      return resolve(this.config.output.replace(/([.][a-w]{2,4})?$/i, ext => /^[.]png$/i.test(ext) || this.config.thumbnail ? '.png' : '.pdf'))
+      return resolve(this.config.output.replace(/([.][a-w]{2,4})?$/i, ext => /^[.]png$/i.test(ext) ? '.png' : '.pdf'))
     }
 
     private get type(): 'PDF' | 'PNG' {
@@ -96,7 +94,7 @@ import { author, description, homepage, keywords, name, title } from '../package
         input: Buffer.from(data),
         top: 0,
         left: meta.slice(0, i).reduce((sum, { width }) => sum + (width ?? 0), 0),
-      }))).png().toBuffer().then(result => this.config.thumbnail ? sharp(result).resize({ height: 200 }).png().toBuffer() : result)
+      }))).png().toBuffer()
     }
 
     private async combinePDFs(pdfs: Uint8Array[]): Promise<Buffer> {
@@ -119,7 +117,6 @@ import { author, description, homepage, keywords, name, title } from '../package
     ...{ scheme: 'file', paths: Object.keys(pages).map(name => resolve(dist, `${name}.html`)) },
     output: resolve(__dirname, process.env.OUTPUT ?? 'ccjmne-resume.pdf'),
     date: process.env.DATE ? new Date(process.env.DATE) : undefined,
-    thumbnail: /^y/i.test(process.env.THUMBNAIL!),
     properties: { title, author, subject: description, keywords: keywords.join(', '), creator: `${name} (${homepage})` },
     blocking: true,
   })
